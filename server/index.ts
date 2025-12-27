@@ -2,8 +2,8 @@ import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import cors from "cors";
 
-import { schema } from "./libs/schema";
-import { root as rootValue } from "./libs/root";
+import { schema } from "./lib/schema";
+import { root as rootValue } from "./lib/root";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
