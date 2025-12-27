@@ -23,7 +23,6 @@ export const schema = buildSchema(`
   input PostInput {
     title: String!
     content: String!
-    userId: ID!
   }
 
   type Query {

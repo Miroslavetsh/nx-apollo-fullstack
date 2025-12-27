@@ -1,7 +1,8 @@
-import { users } from "../lib/data";
-import { ID } from "../types/common";
+import { users } from "../../lib/data";
+import { ID } from "../../types/common";
 
-import { UserInput } from "../types/user";
+import { User, UserInput } from "../../types/user";
+import { buildUserWithPosts } from "./user.builder";
 
 export const getAllUsers = () => users;
 
@@ -10,7 +11,7 @@ export const getUserById = (args: { id: ID }) => {
 };
 
 export const createUser = (args: { user: UserInput }) => {
-  const newUser = { ...args.user, id: Date.now(), posts: [] };
+  const newUser = buildUserWithPosts(args.user);
   users.push(newUser);
   return newUser;
 };

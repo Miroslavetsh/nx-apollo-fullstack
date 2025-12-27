@@ -1,5 +1,4 @@
 import { ID } from "./common";
-import { User } from "./user";
 
 export interface Post {
   id: ID;
@@ -11,5 +10,8 @@ export interface Post {
 export interface PostInput {
   title: string;
   content: string;
+}
+
+export interface PostInputWithUserId extends PostInput {
   userId: ID;
 }
