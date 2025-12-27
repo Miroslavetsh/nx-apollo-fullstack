@@ -1,18 +1,22 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import { graphqlHTTP } from "express-graphql";
+import cors from "cors";
+
+import { schema } from "./libs/schema";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(express.json());
+app.use(cors());
 
-app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "Hello from Express server!" });
-});
-
-app.get("/api/test", (req: Request, res: Response) => {
-  const testData = { status: "ok", timestamp: new Date().toISOString() };
-  res.json(testData);
-});
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    graphiql: true,
+    schema,
+    rootValue: { message: "Hello from GraphQL!" },
+  })
+);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
