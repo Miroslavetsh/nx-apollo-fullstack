@@ -3,6 +3,7 @@ import { graphqlHTTP } from "express-graphql";
 import cors from "cors";
 
 import { schema } from "./libs/schema";
+import { root as rootValue } from "./libs/root";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -14,7 +15,7 @@ app.use(
   graphqlHTTP({
     graphiql: true,
     schema,
-    rootValue: { message: "Hello from GraphQL!" },
+    rootValue,
   })
 );
 
