@@ -5,7 +5,7 @@
       "name": "Debug Server",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "tsx",
+      "runtimeExecutable": "nodemon",
       "runtimeArgs": [
         "index.ts"
       ],
