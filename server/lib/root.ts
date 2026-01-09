@@ -1,8 +1,14 @@
-import { getAllUserPosts } from "../services/post/post.service";
+import {
+  getAllUserPosts,
+  updatePost,
+  deletePost,
+} from "../services/post/post.service";
 import {
   createUser,
   getAllUsers,
   getUserById,
+  updateUser,
+  deleteUser,
 } from "../services/user/user.service";
 
 export const root = {
@@ -10,4 +16,8 @@ export const root = {
   getAllUserPosts,
   getUserById,
   createUser,
+  updateUser,
+  deleteUser,
+  updatePost,
+  deletePost,
 };

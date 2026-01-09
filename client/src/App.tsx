@@ -4,37 +4,39 @@ import { CREATE_USER, UPDATE_USER, DELETE_USER } from "./mutations/user";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { CreateUserForm } from "./components/CreateUserForm";
 import { UsersList } from "./components/UsersList";
+import type {
+  GetAllUsersQuery,
+  CreateUserMutation,
+  UpdateUserMutation,
+  DeleteUserMutation,
+} from "@graphql-apollo-course/shared";
 
-// TODO: Make shared types microservice and use them in both client and server using nx + add shared types, schemas and graphql files to nx monorepo and update launch.json for debugging
 // TODO add api lib where add the realization of api methods using server app as the definitions for all the available operations + add client codegen script to nx using best practice
 // TODO: Make best practice for graphql using schema separation
-//TODO: Make custom hook for user form (CRUD operations + mutations + handler functions)
+//TODO: Make custom hook for user form (CRUD operations + mutations + handler functions) + debounce function for form submission
 // TODO: Add toaster for errors and success messages + add emitting of success and error messages to custom hook for user form
 
 function App() {
-  const { data, loading, error, refetch } = useQuery(GET_ALL_USERS);
-  const [users, setUsers] = useState<any[]>([]);
+  const { data, loading, error, refetch } =
+    useQuery<GetAllUsersQuery>(GET_ALL_USERS);
+  const [users, setUsers] = useState<GetAllUsersQuery["getAllUsers"]>([]);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
 
-  const [createUser] = useMutation(CREATE_USER, {
+  const [createUser] = useMutation<CreateUserMutation>(CREATE_USER, {
     refetchQueries: [{ query: GET_ALL_USERS }],
   });
 
-  const [updateUser] = useMutation(UPDATE_USER, {
+  const [updateUser] = useMutation<UpdateUserMutation>(UPDATE_USER, {
     refetchQueries: [{ query: GET_ALL_USERS }],
   });
 
-  const [deleteUser] = useMutation(DELETE_USER, {
+  const [deleteUser] = useMutation<DeleteUserMutation>(DELETE_USER, {
     refetchQueries: [{ query: GET_ALL_USERS }],
   });
 
   useEffect(() => {
-    if (!loading && data) {
-      // @ts-ignore
-      const allUsers = data.getAllUsers;
-      if (allUsers) {
-        setUsers(allUsers);
-      }
+    if (!loading && data?.getAllUsers) {
+      setUsers(data.getAllUsers);
     }
   }, [data, loading]);
 

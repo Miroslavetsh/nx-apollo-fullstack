@@ -1,13 +1,8 @@
 import { UserCard } from "./UserCard";
-
-type User = {
-  id: string;
-  username: string;
-  age: number;
-};
+import type { GetAllUsersQuery } from "@graphql-apollo-course/shared";
 
 type UsersListProps = {
-  users: User[];
+  users: GetAllUsersQuery["getAllUsers"];
   loading?: boolean;
   error?: Error | null;
   onEdit?: (id: string) => void;
