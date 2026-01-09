@@ -5,17 +5,16 @@ const config: CodegenConfig = {
   documents: "./src/graphql/operations/**/*.{ts,graphql}",
   generates: {
     "./src/graphql/generated/index.ts": {
-      plugins: [
-        "typescript",
-        "typescript-operations",
-        "typescript-react-apollo",
-      ],
+      plugins: ["typescript", "typescript-operations"],
       config: {
-        withHooks: true,
-        withComponent: false,
-        withHOC: false,
         skipTypename: false,
-        withRefetchFn: true,
+        addDocBlocks: true,
+        dedupeOperationSuffix: true,
+        onlyOperationTypes: false,
+        avoidOptionals: false,
+        scalars: {
+          ID: "string",
+        },
       },
     },
   },
