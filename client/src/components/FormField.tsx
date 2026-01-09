@@ -6,7 +6,6 @@ type FormFieldProps = {
   label?: string;
   type?: string;
   placeholder?: string;
-  error?: boolean | null;
   className?: string;
 };
 
@@ -15,10 +14,11 @@ export function FormField({
   label,
   type = "text",
   placeholder,
-  error,
   className,
 }: FormFieldProps) {
-  const { state, setField } = useFormContext();
+  const { state, errors, setField } = useFormContext();
+  const error = errors[name];
+  const hasError = !!error;
 
   return (
     <BaseInput
@@ -29,7 +29,8 @@ export function FormField({
       placeholder={placeholder}
       value={state[name] || ""}
       onChange={(e) => setField(name, e.target.value)}
-      error={error}
+      error={hasError}
+      errorMessage={error}
       className={className}
     />
   );

@@ -10,9 +10,17 @@ type UsersListProps = {
   users: User[];
   loading?: boolean;
   error?: Error | null;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 };
 
-export function UsersList({ users, loading, error }: UsersListProps) {
+export function UsersList({
+  users,
+  loading,
+  error,
+  onEdit,
+  onDelete,
+}: UsersListProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Users List</h2>
@@ -29,6 +37,8 @@ export function UsersList({ users, loading, error }: UsersListProps) {
               id={user.id}
               username={user.username}
               age={user.age}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))}
         </div>

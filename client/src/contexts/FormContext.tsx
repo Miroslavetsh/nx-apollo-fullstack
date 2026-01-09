@@ -4,33 +4,74 @@ type FormState = {
   [key: string]: string;
 };
 
+type FormErrors = {
+  [key: string]: string | undefined;
+};
+
 type FormAction =
   | { type: "SET_FIELD"; field: string; value: string }
+  | { type: "SET_ERRORS"; errors: FormErrors }
+  | { type: "CLEAR_ERROR"; field: string }
   | { type: "RESET_FORM" }
   | { type: "SET_FORM"; form: FormState };
 
 type FormContextType = {
   state: FormState;
+  errors: FormErrors;
   setField: (field: string, value: string) => void;
+  setErrors: (errors: FormErrors) => void;
+  clearError: (field: string) => void;
   resetForm: () => void;
   setForm: (form: FormState) => void;
 };
 
 const FormContext = createContext<FormContextType | undefined>(undefined);
 
-function formReducer(state: FormState, action: FormAction): FormState {
+type FormReducerState = {
+  state: FormState;
+  errors: FormErrors;
+};
+
+function formReducer(
+  currentState: FormReducerState,
+  action: FormAction
+): FormReducerState {
   switch (action.type) {
     case "SET_FIELD":
       return {
-        ...state,
-        [action.field]: action.value,
+        ...currentState,
+        state: {
+          ...currentState.state,
+          [action.field]: action.value,
+        },
+        errors: {
+          ...currentState.errors,
+          [action.field]: undefined,
+        },
+      };
+    case "SET_ERRORS":
+      return {
+        ...currentState,
+        errors: action.errors,
+      };
+    case "CLEAR_ERROR":
+      return {
+        ...currentState,
+        errors: {
+          ...currentState.errors,
+          [action.field]: undefined,
+        },
       };
     case "RESET_FORM":
-      return {};
+      return { state: {}, errors: {} };
     case "SET_FORM":
-      return action.form;
+      return {
+        ...currentState,
+        state: action.form,
+        errors: {},
+      };
     default:
-      return state;
+      return currentState;
   }
 }
 
@@ -43,10 +84,21 @@ export function FormProvider({
   children,
   initialValues = {},
 }: FormProviderProps) {
-  const [state, dispatch] = useReducer(formReducer, initialValues);
+  const [{ state, errors }, dispatch] = useReducer(formReducer, {
+    state: initialValues,
+    errors: {},
+  });
 
   const setField = (field: string, value: string) => {
     dispatch({ type: "SET_FIELD", field, value });
+  };
+
+  const setErrors = (errors: FormErrors) => {
+    dispatch({ type: "SET_ERRORS", errors });
+  };
+
+  const clearError = (field: string) => {
+    dispatch({ type: "CLEAR_ERROR", field });
   };
 
   const resetForm = () => {
@@ -58,7 +110,17 @@ export function FormProvider({
   };
 
   return (
-    <FormContext.Provider value={{ state, setField, resetForm, setForm }}>
+    <FormContext.Provider
+      value={{
+        state,
+        errors,
+        setField,
+        setErrors,
+        clearError,
+        resetForm,
+        setForm,
+      }}
+    >
       {children}
     </FormContext.Provider>
   );

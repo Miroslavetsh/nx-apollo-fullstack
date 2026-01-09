@@ -1,6 +1,7 @@
 import { Form } from "./Form";
 import { FormField } from "./FormField";
 import { Button } from "./Button";
+import { userSchema } from "../lib/validations";
 
 type CreateUserFormProps = {
   onSubmit: (values: Record<string, string>) => void;
@@ -14,7 +15,7 @@ export function CreateUserForm({
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Create User</h2>
-      <Form onSubmit={onSubmit} className="space-y-4">
+      <Form onSubmit={onSubmit} schema={userSchema} className="space-y-4">
         <FormField
           name="username"
           label="Username"

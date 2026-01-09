@@ -21,10 +21,11 @@ interface BaseInputProps
   extends InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {
   label?: string;
+  errorMessage?: string;
 }
 
 export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
-  ({ label, error, className, ...props }, ref) => (
+  ({ label, error, errorMessage, className, ...props }, ref) => (
     <div className="w-full">
       {label && (
         <label
@@ -39,7 +40,9 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
         className={cn(inputVariants({ error: !!error }), className)}
         {...props}
       />
-      {error && <p className="mt-1 text-sm text-red-600">Error</p>}
+      {error && errorMessage && (
+        <p className="mt-1 text-sm text-red-600">{errorMessage}</p>
+      )}
     </div>
   )
 );
