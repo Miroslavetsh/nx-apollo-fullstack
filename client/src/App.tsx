@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "@apollo/client/react";
 import { CreateUserForm } from "./components/CreateUserForm";
 import { UsersList } from "./components/UsersList";
 
-// TODO: Make shared types microservice and use them in both client and server using nx + add shared types, schemas and graphql files to nx monorepo
+// TODO: Make shared types microservice and use them in both client and server using nx + add shared types, schemas and graphql files to nx monorepo and update launch.json for debugging
 // TODO add api lib where add the realization of api methods using server app as the definitions for all the available operations + add client codegen script to nx using best practice
 // TODO: Make best practice for graphql using schema separation
 //TODO: Make custom hook for user form (CRUD operations + mutations + handler functions)

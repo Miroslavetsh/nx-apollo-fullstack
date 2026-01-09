@@ -1,0 +1,20 @@
+query GetAllUsers {
+  getAllUsers {
+    id
+    username
+    age
+  }
+}
+
+query GetUserById($id: ID!) {
+  getUserById(id: $id) {
+    id
+    username
+    age
+    posts {
+      id
+      title
+      content
+    }
+  }
+}

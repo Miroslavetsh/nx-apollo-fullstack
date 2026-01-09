@@ -2,7 +2,8 @@ import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import cors from "cors";
 
-import { schema } from "./lib/schema";
+// Import schema directly from server-only file
+import { schema } from "@graphql-apollo-course/shared/graphql/schema.server";
 import { root as rootValue } from "./lib/root";
 
 const app = express();

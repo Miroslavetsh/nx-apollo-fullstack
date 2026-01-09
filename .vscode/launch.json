@@ -5,22 +5,55 @@
       "name": "Debug Server",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "nodemon",
-      "runtimeArgs": [
-        "index.ts"
-      ],
+      "runtimeExecutable": "tsx",
+      "runtimeArgs": ["index.ts"],
       "cwd": "${workspaceFolder}/server",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "serverReadyAction": {
         "pattern": "listening on port ([0-9]+)",
         "uriFormat": "http://localhost:%s",
         "action": "debugWithChrome"
       }
+    },
+    {
+      "name": "Debug Client",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/client/src",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
+      },
+      "preLaunchTask": "Start React Dev Server"
+    },
+    {
+      "name": "Debug Full Stack",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "tsx",
+      "runtimeArgs": ["index.ts"],
+      "cwd": "${workspaceFolder}/server",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "serverReadyAction": {
+        "pattern": "listening on port ([0-9]+)",
+        "uriFormat": "http://localhost:%s",
+        "action": "debugWithChrome"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Full Stack (Client + Server)",
+      "configurations": ["Debug Server", "Debug Client"],
+      "preLaunchTask": "Start React Dev Server",
+      "stopAll": true
     }
   ]
 }

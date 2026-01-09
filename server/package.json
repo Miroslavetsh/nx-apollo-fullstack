@@ -20,6 +20,7 @@
     "typescript": "^5.3.0"
   },
   "dependencies": {
+    "@graphql-apollo-course/shared": "workspace:*",
     "cors": "^2.8.5",
     "express": "^5.2.1",
     "express-graphql": "^0.12.0",

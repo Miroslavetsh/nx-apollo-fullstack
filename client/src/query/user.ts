@@ -1,11 +1,2 @@
-import { gql } from "@apollo/client";
-
-export const GET_ALL_USERS = gql`
-  query GetAllUsers {
-    getAllUsers {
-      id
-      username
-      age
-    }
-  }
-`;
+// Re-export from shared library
+export { GET_ALL_USERS } from "@graphql-apollo-course/shared";

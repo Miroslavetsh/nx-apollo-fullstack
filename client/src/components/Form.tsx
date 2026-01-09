@@ -1,6 +1,6 @@
 import type { FormHTMLAttributes, ReactNode } from "react";
 import { FormProvider, useFormContext } from "../contexts/FormContext";
-import { z } from "zod";
+import { z } from "@graphql-apollo-course/shared";
 
 interface FormProps
   extends Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit"> {
