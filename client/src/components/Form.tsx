@@ -1,6 +1,7 @@
 import type { FormHTMLAttributes, ReactNode } from "react";
 import { FormProvider, useFormContext } from "../contexts/FormContext";
 import { z } from "@graphql-apollo-course/shared";
+import { validateForm } from "../lib/validations";
 
 interface FormProps
   extends Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit"> {
@@ -23,16 +24,9 @@ function FormContent({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: Move this to validation utility function (not hook)
     if (schema) {
-      const result = schema.safeParse(state);
-      if (!result.success) {
-        const errors: Record<string, string> = {};
-        result.error.errors.forEach((err: z.ZodIssue) => {
-          if (err.path[0]) {
-            errors[err.path[0].toString()] = err.message;
-          }
-        });
+      const errors = validateForm(schema, state);
+      if (errors) {
         setErrors(errors);
         onValidationError?.(errors);
         return;
