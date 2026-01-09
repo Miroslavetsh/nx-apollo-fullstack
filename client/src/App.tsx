@@ -2,7 +2,6 @@ import { CreateUserForm } from "./components/CreateUserForm";
 import { UsersList } from "./components/UsersList";
 import { useUsers } from "./hooks/useUsers";
 
-// TODO: Add toaster for errors and success messages + add emitting of success and error messages to custom hook for user form + provide for it with connection to main.tsx
 //TODO: Add updating a user functionality + adding/removing posts functionality
 
 function App() {

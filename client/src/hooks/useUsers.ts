@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useApolloClient } from "@apollo/client/react";
 import { UserAPI } from "@graphql-apollo-course/api";
 import type { User, UserInput } from "@graphql-apollo-course/shared";
+import { useToast } from "./useToast";
 
 type UseUsersReturn = {
   // State
@@ -37,6 +38,9 @@ export function useUsers(): UseUsersReturn {
   // Initialize UserAPI instance
   const userAPI = useMemo(() => new UserAPI(client), [client]);
 
+  // Initialize toast hook
+  const { showSuccess, showError } = useToast();
+
   // Debounce timer ref
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -53,12 +57,15 @@ export function useUsers(): UseUsersReturn {
       const fetchedUsers = await userAPI.getAllUsers();
       setUsers(fetchedUsers);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to load users"));
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to load users";
+      setError(new Error(errorMessage));
+      showError(errorMessage);
       console.error("Error loading users:", err);
     } finally {
       setLoading(false);
     }
-  }, [userAPI]);
+  }, [userAPI, showError]);
 
   const createUser = useCallback(
     async (user: UserInput) => {
@@ -66,15 +73,17 @@ export function useUsers(): UseUsersReturn {
       try {
         await userAPI.createUser(user);
         await loadUsers();
+        showSuccess("User created successfully!");
       } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to create user")
-        );
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create user";
+        setError(new Error(errorMessage));
+        showError(errorMessage);
         console.error("Error creating user:", err);
         throw err;
       }
     },
-    [userAPI, loadUsers]
+    [userAPI, loadUsers, showSuccess, showError]
   );
 
   const updateUser = useCallback(
@@ -84,15 +93,17 @@ export function useUsers(): UseUsersReturn {
         await userAPI.updateUser(id, user);
         setEditingUserId(null);
         await loadUsers();
+        showSuccess("User updated successfully!");
       } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to update user")
-        );
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update user";
+        setError(new Error(errorMessage));
+        showError(errorMessage);
         console.error("Error updating user:", err);
         throw err;
       }
     },
-    [userAPI, loadUsers]
+    [userAPI, loadUsers, showSuccess, showError]
   );
 
   const deleteUser = useCallback(
@@ -102,16 +113,18 @@ export function useUsers(): UseUsersReturn {
         try {
           await userAPI.deleteUser(id);
           await loadUsers();
+          showSuccess("User deleted successfully!");
         } catch (err) {
-          setError(
-            err instanceof Error ? err : new Error("Failed to delete user")
-          );
+          const errorMessage =
+            err instanceof Error ? err.message : "Failed to delete user";
+          setError(new Error(errorMessage));
+          showError(errorMessage);
           console.error("Error deleting user:", err);
           throw err;
         }
       }
     },
-    [userAPI, loadUsers]
+    [userAPI, loadUsers, showSuccess, showError]
   );
 
   const editUser = useCallback(
