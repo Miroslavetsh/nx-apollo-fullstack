@@ -1,78 +1,70 @@
-import { useEffect, useState } from "react";
-import { GET_ALL_USERS } from "./query/user";
-import { CREATE_USER, UPDATE_USER, DELETE_USER } from "./mutations/user";
-import { useQuery, useMutation } from "@apollo/client/react";
+import { useEffect, useState, useMemo } from "react";
+import { useApolloClient } from "@apollo/client/react";
 import { CreateUserForm } from "./components/CreateUserForm";
 import { UsersList } from "./components/UsersList";
-import type {
-  GetAllUsersQuery,
-  CreateUserMutation,
-  UpdateUserMutation,
-  DeleteUserMutation,
-} from "@graphql-apollo-course/shared";
+import { UserAPI } from "@graphql-apollo-course/api";
+import type { User } from "@graphql-apollo-course/shared";
 
-// TODO add api lib where add the realization of api methods using server app as the definitions for all the available operations + add client codegen script to nx using best practice
-// TODO: Make best practice for graphql using schema separation
 //TODO: Make custom hook for user form (CRUD operations + mutations + handler functions) + debounce function for form submission
 // TODO: Add toaster for errors and success messages + add emitting of success and error messages to custom hook for user form
+//TODO: Add updating a user functionality + adding/removing posts functionality
 
 function App() {
-  const { data, loading, error, refetch } =
-    useQuery<GetAllUsersQuery>(GET_ALL_USERS);
-  const [users, setUsers] = useState<GetAllUsersQuery["getAllUsers"]>([]);
+  const client = useApolloClient();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
 
-  const [createUser] = useMutation<CreateUserMutation>(CREATE_USER, {
-    refetchQueries: [{ query: GET_ALL_USERS }],
-  });
+  // Initialize UserAPI instance
+  const userAPI = useMemo(() => new UserAPI(client), [client]);
 
-  const [updateUser] = useMutation<UpdateUserMutation>(UPDATE_USER, {
-    refetchQueries: [{ query: GET_ALL_USERS }],
-  });
-
-  const [deleteUser] = useMutation<DeleteUserMutation>(DELETE_USER, {
-    refetchQueries: [{ query: GET_ALL_USERS }],
-  });
-
+  // Load users on mount
   useEffect(() => {
-    if (!loading && data?.getAllUsers) {
-      setUsers(data.getAllUsers);
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const fetchedUsers = await userAPI.getAllUsers();
+      setUsers(fetchedUsers);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("Failed to load users"));
+      console.error("Error loading users:", err);
+    } finally {
+      setLoading(false);
     }
-  }, [data, loading]);
+  };
 
   const handleFormSubmit = async (values: Record<string, string>) => {
     try {
+      setError(null);
       if (editingUserId) {
         // Update existing user
-        await updateUser({
-          variables: {
-            id: editingUserId,
-            user: {
-              username: values.username,
-              age: parseInt(values.age, 10),
-            },
-          },
+        await userAPI.updateUser(editingUserId, {
+          username: values.username,
+          age: parseInt(values.age, 10),
         });
         setEditingUserId(null);
       } else {
         // Create new user
-        await createUser({
-          variables: {
-            user: {
-              username: values.username,
-              age: parseInt(values.age, 10),
-            },
-          },
+        await userAPI.createUser({
+          username: values.username,
+          age: parseInt(values.age, 10),
         });
       }
-      // Refetch will happen automatically due to refetchQueries
+      // Reload users after mutation
+      await loadUsers();
     } catch (err) {
+      setError(err instanceof Error ? err : new Error("Failed to save user"));
       console.error("Error saving user:", err);
     }
   };
 
   const handleGetAllUsers = () => {
-    refetch();
+    loadUsers();
   };
 
   const handleEditUser = (id: string) => {
@@ -86,11 +78,14 @@ function App() {
   const handleDeleteUser = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await deleteUser({
-          variables: { id },
-        });
-        // Refetch will happen automatically due to refetchQueries
+        setError(null);
+        await userAPI.deleteUser(id);
+        // Reload users after deletion
+        await loadUsers();
       } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to delete user")
+        );
         console.error("Error deleting user:", err);
       }
     }
