@@ -1,4 +1,5 @@
 import { BaseInput } from "./BaseInput";
+import { BaseTextarea } from "./BaseTextarea";
 import { useFormContext } from "../contexts/FormContext";
 
 type FormFieldProps = {
@@ -19,6 +20,22 @@ export function FormField({
   const { state, errors, setField } = useFormContext();
   const error = errors[name];
   const hasError = !!error;
+
+  if (type === "textarea") {
+    return (
+      <BaseTextarea
+        id={name}
+        name={name}
+        label={label}
+        placeholder={placeholder}
+        value={state[name] || ""}
+        onChange={(e) => setField(name, e.target.value)}
+        error={hasError}
+        errorMessage={error}
+        className={className}
+      />
+    );
+  }
 
   return (
     <BaseInput

@@ -1,8 +1,12 @@
+import { useEffect } from "react";
 import { CreateUserForm } from "./components/CreateUserForm";
 import { UsersList } from "./components/UsersList";
 import { useUsers } from "./hooks/useUsers";
+import { CreatePostForm } from "./components/CreatePostForm";
+import { PostsList } from "./components/PostsList";
+import { usePosts } from "./hooks/usePosts";
 
-//TODO: Add updating a user functionality + adding/removing posts functionality
+// Posts management added via usePosts
 
 function App() {
   const {
@@ -16,6 +20,22 @@ function App() {
     cancelEdit,
     debouncedSubmit,
   } = useUsers();
+
+  const {
+    posts,
+    loading: postsLoading,
+    error: postsError,
+    editingPost,
+    loadPosts,
+    editPost,
+    deletePost,
+    cancelEdit: cancelPostEdit,
+    debouncedSubmit: debouncedSubmitPost,
+  } = usePosts();
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -38,6 +58,24 @@ function App() {
           onEdit={editUser}
           onDelete={deleteUser}
         />
+
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Posts</h2>
+
+          <CreatePostForm
+            onSubmit={debouncedSubmitPost}
+            editingPost={editingPost}
+            onCancel={cancelPostEdit}
+          />
+
+          <PostsList
+            posts={posts}
+            loading={postsLoading}
+            error={postsError}
+            onEdit={editPost}
+            onDelete={deletePost}
+          />
+        </div>
       </div>
     </div>
   );

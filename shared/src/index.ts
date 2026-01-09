@@ -4,6 +4,7 @@ export * from "./types/common";
 
 // Validations
 export * from "./validations/user";
+export * from "./validations/post";
 
 // GraphQL Operations (client-safe, no Node.js modules)
 export * from "./graphql/operations/user.queries";
