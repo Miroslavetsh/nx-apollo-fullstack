@@ -4,9 +4,8 @@ import { GET_ALL_USERS } from "./query/user";
 import { useQuery } from "@apollo/client/react";
 
 // TODO: Separate components to support multi forms
-// Connect Tailwind CSS to the project
 // Add form validation react-hook-form + zod
-// Make shared types microservice and use them in both client and server
+// Make shared types microservice and use them in both client and server using nx
 
 function App() {
   const { data, loading, error } = useQuery(GET_ALL_USERS);
